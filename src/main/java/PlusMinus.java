@@ -1,11 +1,9 @@
 package src.main.java;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Given an array of integers, calculate the ratios of its elements that are positive, negative, and zero. Print the decimal value of each fraction on a new line with  places after the decimal.
@@ -19,60 +17,39 @@ import java.util.stream.Collectors;
  * 0.400000
  * 0.400000
  * 0.200000
- * Function Description
- *
- * Complete the plusMinus function in the editor below.
- *
- * plusMinus has the following parameter(s):
- *
- * int arr[n]: an array of integers
- * Print
- * Print the ratios of positive, negative and zero values in the array. Each value should be printed on a separate line with  digits after the decimal. The function should not return a value.
- *
- * Input Format
- *
- * The first line contains an integer, , the size of the array.
- * The second line contains  space-separated integers that describe .
- *
- * Constraints
- *
- *
- *
- * Output Format
- *
- * Print the following  lines, each to  decimals:
- *
- * proportion of positive values
- * proportion of negative values
- * proportion of zeros
- * Sample Input
- *
- * STDIN           Function
- * -----           --------
- * 6               arr[] size n = 6
- * -4 3 -9 0 4 1   arr = [-4, 3, -9, 0, 4, 1]
- * Sample Output
- *
- * 0.500000
- * 0.333333
- * 0.166667
- * Explanation
  *
  * There are  positive numbers,  negative numbers, and  zero in the array.
  * The proportions of occurrence are positive: , negative:  and zeros: .
  *
  * Language
+ * @author pankaj rana
  */
 public class PlusMinus {
     static Logger logger = Logger.getLogger("INFO");
     public static void plusMinus(List<Integer> arr) {
-        int size= arr.size();
-        Map<Integer, Long> countMap = arr.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        for(Long e: countMap.values()){
-           logger.info(String.format ( "%f",(double) e / size ));
+        if(!arr.isEmpty()  && arr.size() <= 100){
+            int size= arr.size();
+            AtomicInteger countPlus = new AtomicInteger();
+            AtomicInteger countMinus = new AtomicInteger();
+            AtomicInteger countZero = new AtomicInteger();
+            arr.forEach(e->{
+                if(e > 0 ) {
+                    countPlus.getAndIncrement();
+                }
+               else if(e < 0 ) {
+                    countMinus.getAndIncrement();
+                }
+                else{
+                    countZero.getAndIncrement();
+                }
+            });
+            logger.info(String.format("%f",countPlus.doubleValue()/size ));
+            logger.info(String.format("%f",countMinus.doubleValue()/size ));
+            logger.info(String.format("%f",countZero.doubleValue()/size ));
         }
-      }
+    }
+
     public static void main(String[] args) {
-        plusMinus(Arrays.asList(-1, 1, -9, 0, 4, 1));
+        plusMinus(Arrays.asList(-4 ,3 ,-9, 0, 4, 1));
     }
 }
